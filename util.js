@@ -157,7 +157,21 @@ export const promptForEnvVariables = async (projectDir) => {
 }
 
 export const writeEnvVariables = async (envVariables, projectDir) => {
-  const envPath = path.join(projectDir, ".env.local")
+  let envPath
+
+  // Check for .env file
+  if (fs.existsSync(path.join(projectDir, ".env"))) {
+    envPath = path.join(projectDir, ".env")
+  }
+  // If no .env, check for .env.local file
+  else if (fs.existsSync(path.join(projectDir, ".env.local"))) {
+    envPath = path.join(projectDir, ".env.local")
+  }
+  // If neither exists, set path to create .env.local file
+  else {
+    envPath = path.join(projectDir, ".env.local")
+  }
+
   const envData = Object.entries(envVariables)
     .map(([key, value]) => `${key}=${value}`)
     .join("\n")
