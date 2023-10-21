@@ -93,7 +93,7 @@ const integrateBucketCMS = async () => {
     }
 
     spinner.start("Cloning the Bucket CMS repository...")
-    await execa("git", ["clone", "https://github.com/johnpolacek/bucket-cms.git", tempDir])
+    await execa("git", ["clone", "https://github.com/bucket-cms/bucket-cms.git", tempDir])
     spinner.succeed("Bucket CMS repository cloned.")
 
     // Prompt for Bucket CMS route
