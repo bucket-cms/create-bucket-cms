@@ -9,7 +9,15 @@ export const getDependenciesFromRepo = async (repoUrl) => {
   try {
     const response = await axios.get(repoUrl)
     const packageJson = response.data
-    return Object.keys(packageJson.dependencies || {})
+    const rawDependencies = packageJson.dependencies || {}
+    const excludeDependencies = ["next", "react", "react-dom", "clerk", "sendgrid", "stripe"]
+    const filteredDependencies = Object.keys(rawDependencies)
+      .filter((dependency) => !excludeDependencies.includes(dependency))
+      .reduce((obj, key) => {
+        obj[key] = rawDependencies[key]
+        return obj
+      }, {})
+    return filteredDependencies
   } catch (error) {
     console.error(chalk.red("Error fetching dependencies from GitHub repo."))
     throw error

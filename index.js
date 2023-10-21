@@ -73,8 +73,7 @@ const integrateBucketCMS = async () => {
 
     // Get dependencies dynamically
     const repoPackageJsonUrl = "https://raw.githubusercontent.com/bucket-cms/bucket-cms/main/package.json"
-    const repoDependencies = await getDependenciesFromRepo(repoPackageJsonUrl)
-    const dependencies = repoDependencies.filter((dep) => dep !== "next-auth").filter((dep) => !dep.includes("clerk")) // exclude auth dependencies - that is user-land
+    const dependencies = await getDependenciesFromRepo(repoPackageJsonUrl)
 
     spinner.succeed(`Loaded dependencies`)
     const packageManager = await promptForPackageManager()
