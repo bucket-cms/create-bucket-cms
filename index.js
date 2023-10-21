@@ -72,8 +72,9 @@ const integrateBucketCMS = async () => {
     spinner.start("Fetching Bucket CMS package dependencies...")
 
     // Get dependencies dynamically
-    const repoPackageJsonUrl = "https://raw.githubusercontent.com/bucket-cms/bucket-cms/main/package.json"
-    const dependencies = await getDependenciesFromRepo(repoPackageJsonUrl)
+    const repoPackageJsonUrl = "https://raw.githubusercontent.com/johnpolacek/bucket-cms/main/package.json"
+    const excludeDependencies = ["next", "react", "react-dom", "clerk", "sendgrid", "stripe"]
+    const dependencies = await getDependenciesFromRepo(repoPackageJsonUrl, excludeDependencies)
 
     spinner.succeed(`Loaded dependencies`)
     const packageManager = await promptForPackageManager()

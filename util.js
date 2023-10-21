@@ -5,18 +5,15 @@ import path from "path"
 import axios from "axios"
 import chalk from "chalk"
 
-export const getDependenciesFromRepo = async (repoUrl) => {
+export const getDependenciesFromRepo = async (repoUrl, excludeDependencies) => {
   try {
     const response = await axios.get(repoUrl)
     const packageJson = response.data
-    const rawDependencies = packageJson.dependencies || {}
-    const excludeDependencies = ["next", "react", "react-dom", "clerk", "sendgrid", "stripe"]
-    const filteredDependencies = Object.keys(rawDependencies)
-      .filter((dependency) => !excludeDependencies.includes(dependency))
-      .reduce((obj, key) => {
-        obj[key] = rawDependencies[key]
-        return obj
-      }, {})
+    const allDependencies = Object.keys(packageJson.dependencies || {})
+
+    // Filter out excluded dependencies
+    const filteredDependencies = allDependencies.filter((dep) => !excludeDependencies.some((filterString) => dep.includes(filterString)))
+
     return filteredDependencies
   } catch (error) {
     console.error(chalk.red("Error fetching dependencies from GitHub repo."))
