@@ -219,7 +219,7 @@ export const checkLicenseStatus = async () => {
 
   if (!isCommercial) {
     console.log(chalk.green("Bucket CMS is free for non-commercial projects!"))
-    console.log(chalk.blue("For more details, check the license on GitHub: https://github.com/johnpolacek/bucket-cms/blob/main/LICENSE"))
+    console.log(chalk.blue("For more details, check the license on GitHub: https://github.com/bucket-cms/bucket-cms/blob/main/LICENSE"))
     return true
   } else {
     const { agreeToPay } = await inquirer.prompt([
