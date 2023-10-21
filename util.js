@@ -161,15 +161,18 @@ export const promptForEnvVariables = async (projectDir) => {
   return await inquirer.prompt(questions)
 }
 
+const fs = require("fs").promises
+const path = require("path")
+
 export const writeEnvVariables = async (envVariables, projectDir) => {
   let envPath
 
   // Check for .env file
-  if (fs.existsSync(path.join(projectDir, ".env"))) {
+  if (await fs.existsSync(path.join(projectDir, ".env"))) {
     envPath = path.join(projectDir, ".env")
   }
   // If no .env, check for .env.local file
-  else if (fs.existsSync(path.join(projectDir, ".env.local"))) {
+  else if (await fs.existsSync(path.join(projectDir, ".env.local"))) {
     envPath = path.join(projectDir, ".env.local")
   }
   // If neither exists, set path to create .env.local file
@@ -177,19 +180,34 @@ export const writeEnvVariables = async (envVariables, projectDir) => {
     envPath = path.join(projectDir, ".env.local")
   }
 
-  const envData = Object.entries(envVariables)
+  let existingEnv = {}
+
+  // Read the existing env file if it exists
+  if (await fs.existsSync(envPath)) {
+    const envContent = await fs.readFile(envPath, "utf8")
+    existingEnv = envContent.split("\n").reduce((acc, line) => {
+      const [key, value] = line.split("=")
+      if (key && value) {
+        acc[key.trim()] = value.trim()
+      }
+      return acc
+    }, {})
+  }
+
+  // Check and update/skip based if new value is provided
+  Object.entries(envVariables).forEach(([key, value]) => {
+    if (value && (typeof existingEnv[key] === "undefined" || existingEnv[key] !== value)) {
+      existingEnv[key] = value
+    }
+  })
+
+  const envData = Object.entries(existingEnv)
     .map(([key, value]) => `${key}=${value}`)
     .join("\n")
 
-  if (fs.existsSync(envPath)) {
-    // Append to the file if it exists
-    console.log("appending environment variables at " + envPath)
-    await fs.appendFile(envPath, "\n" + envData)
-  } else {
-    // Create the file if it doesn't exist
-    console.log("writing environment variables at " + envPath)
-    await fs.writeFile(envPath, envData)
-  }
+  // Write the updated environment variables
+  console.log("writing environment variables at " + envPath)
+  await fs.writeFile(envPath, envData)
 }
 
 export const getAvailablePort = (startPort) => {

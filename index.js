@@ -80,9 +80,9 @@ const integrateBucketCMS = async () => {
     const packageManager = await promptForPackageManager()
 
     // Install required dependencies
-    spinner.start(`Installing ${dependencies.length} dependencies...`)
+    spinner.start(`Installing dependencies...`)
     await execa(packageManager, ["install", ...dependencies])
-    spinner.succeed(`${dependencies.length} dependencies installed`)
+    spinner.succeed(`Dependencies installed`)
 
     // Clone the GitHub repo to a temporary directory
     const tempDir = path.join(projectDir, ".bucket-cms-temp")
