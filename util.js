@@ -161,9 +161,6 @@ export const promptForEnvVariables = async (projectDir) => {
   return await inquirer.prompt(questions)
 }
 
-const fs = require("fs").promises
-const path = require("path")
-
 export const writeEnvVariables = async (envVariables, projectDir) => {
   let envPath
 
